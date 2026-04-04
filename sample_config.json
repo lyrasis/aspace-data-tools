@@ -1,0 +1,12 @@
+{
+  // "client_base_uri": "http://localhost:4567",
+  "client_base_uri": "https://test.archivesspace.org/staff/api",
+  "client_username": "admin",
+  "client_password": "admin",
+  "client_base_repo": "",
+  "client_page_size": 50,
+  "client_throttle": 0,
+  "client_timeout": 60,
+  "client_verify_ssl": false,
+  "client_debug": false
+}

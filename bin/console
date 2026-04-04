@@ -1,0 +1,14 @@
+#! /usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+Bundler.require(:tools)
+
+require_relative "../lib/aspace_data_documentation"
+require "pry"
+
+def reload!(print = true)
+  load("#{Bundler.root}/lib/aspace_data_documentation.rb")
+end
+
+Pry.start

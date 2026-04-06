@@ -13,6 +13,10 @@ endif::[]
 
 = ArchivesSpace data documentation
 
+toc::[]
+
+== Roadmap
+
 Eventually this repository will contain code to generate documentation of the ArchivesSpace data model, and generated documentation.
 
 This will include:
@@ -20,6 +24,8 @@ This will include:
 * lists of required fields per record type
 * full/consistent record type data templates that will work with migration tooling (but not via ArchivesSpace's own bulk import functionality)
 * etc.
+
+=== Interim data reference recommendations
 
 Until then we can offer the following guidance to folks with questions about record types and fields in ArchivesSpace:
 
@@ -45,3 +51,49 @@ A few options to get more of a birds-eye view of record types:
 * Not all records have an import template. e.g. Resources, Agents, and Classifications, and Events don't have a bulk import spreadsheet.
 * https://github.com/archivesspace/archivesspace/blob/master/common/locales/en.yml[the file for tooltips]: This is the file that contains the tooltips/help text that displays when you hover over a field. It's not comprehensive though. For instance the section on resource records only have fields that only appear in resource records, but not the subrecords like dates, extents, and linked agents since those subrecords may appear in Accessions and Archival Objects.
 * https://github.com/archivesspace/archivesspace/tree/master/common/schemas[JSON schemas] for all ArchivesSpace record types. Depending on how code-tolerant you are, you can get some valuable information on the scope of records (repository or global) and how records get validated from https://github.com/archivesspace/archivesspace/tree/master/backend/app/model[the corresponding ArchivesSpace model files for each record type].
+
+== Setup and usage
+
+=== Setup
+
+==== Get dependencies
+
+[source,bash]
+----
+bundle install
+----
+
+==== Configuration
+
+Copy `sample_config.json` to `~/.config/aspace_data_documentation/config.json`.
+
+Update the copied file as needed.
+For basic usage of this tool, you shouldn't need to make any changes.
+
+With no modifications to the config, the tool will connect to the ArchivesSpace test instance, which is built from the master branch of ArchivesSpace.
+
+If significant changes have been pushed to master, but not yet released, you may wish to switch to a locally-running instance of the latest release.
+
+=== Usage
+
+Right now there is no interface to the code.
+
+Use the `bin/console` command to interact with the code.
+
+`ADD` is a shortcut/alias for `AspaceDataDocumentation`.
+
+[source,bash]
+----
+# Pull all record type schemas and convert to RecordType objects
+# Useful for querying across the record types
+rts = ADD.record_types
+
+# Get a specific record type
+r = ADD.get_rectype("resource")
+
+# List required fields for each record type to screen
+ADD.reqfields
+
+# Get an archivesspace-client instance with which to do make ad hoc API calls
+client = ADD.client
+----

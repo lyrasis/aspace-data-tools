@@ -91,8 +91,8 @@ rts = ADD.record_types
 # Example query across record types to find those with a `position` field,
 #   but no `ancestors` field
 rtna = rts.select do |rectype|
-  rectype.schema["properties"].key?("position") && !
-  rectype.schema["properties"].key?("ancestors")
+  rectype.schema["properties"].key?("position") &&
+    !rectype.schema["properties"].key?("ancestors")
 end
 
 # Get a specific record type

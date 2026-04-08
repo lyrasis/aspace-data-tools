@@ -13,44 +13,13 @@ endif::[]
 
 = ArchivesSpace data tools
 
+Eventually this repository will contain code to generate documentation of the ArchivesSpace data model, along with the generated documentation.
+
+Until then, please see: xref:doc/interim_data_reference_recommendations.adoc[Interim data reference recommendations].
+
+We are also adding tools used to convert/ingest ArchivesSpace data to this repository.
+
 toc::[]
-
-== Roadmap
-
-Eventually this repository will contain code to generate documentation of the ArchivesSpace data model, and generated documentation.
-
-This will include:
-
-* lists of required fields per record type
-* full/consistent record type data templates that will work with migration tooling (but not via ArchivesSpace's own bulk import functionality)
-* etc.
-
-=== Interim data reference recommendations
-
-Until then we can offer the following guidance to folks with questions about record types and fields in ArchivesSpace:
-
-* Look at https://sandbox.archivesspace.org/staff[the ArchiveSpace sandbox] (username = admin, password = admin) to see all available fields for the record types you are interested in. We typically point to https://sandbox.archivesspace.org/staff/resources/16#tree::resource_16[the Krispy Kreme records] (must be logged in to view) as a representative record in the system for archival material.
-
-Note that many record types in ArchivesSpace are based on DACS and EAD.
-
-Major record types in ArchivesSpace include:
-
-* Resources (~=the finding aid)
-** includes Archival Objects, which correspond to inventory items
-* Accessions
-* Agents
-* Subjects
-* Locations
-* Events
-
-If you hover over the fields in any record type, tooltips appear that point to guidance on how to use the fields.
-A few options to get more of a birds-eye view of record types:
-
-* https://sandbox.archivesspace.org/staff/bulk_import_templates[Import templates] (must be logged in to view): many major record types have import templates that contain most, but not all available fields in the record type
-** Note that https://sandbox.archivesspace.org/staff/bulk_import_templates/download?filename=bulk_import_template.xlsx[the archival object xlsx] is restricted to Archival Objects/inventory items to facilitate uploading inventories; but notes, agents, dates, extents, containers, etc. are also options in resource records. Resource records have more fields though.
-* Not all records have an import template. e.g. Resources, Agents, and Classifications, and Events don't have a bulk import spreadsheet.
-* https://github.com/archivesspace/archivesspace/blob/master/common/locales/en.yml[the file for tooltips]: This is the file that contains the tooltips/help text that displays when you hover over a field. It's not comprehensive though. For instance the section on resource records only have fields that only appear in resource records, but not the subrecords like dates, extents, and linked agents since those subrecords may appear in Accessions and Archival Objects.
-* https://github.com/archivesspace/archivesspace/tree/master/common/schemas[JSON schemas] for all ArchivesSpace record types. Depending on how code-tolerant you are, you can get some valuable information on the scope of records (repository or global) and how records get validated from https://github.com/archivesspace/archivesspace/tree/master/backend/app/model[the corresponding ArchivesSpace model files for each record type].
 
 == Setup and usage
 

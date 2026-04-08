@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "pry"
+require "thor"
 require "zeitwerk"
 
 # Main namespace
@@ -14,6 +15,7 @@ module AspaceDataTools
 
     private def setup_loader
       @loader = Zeitwerk::Loader.for_gem
+      @loader.ignore("#{__dir__}/tasks")
       @loader.enable_reloading
       @loader.setup
       @loader

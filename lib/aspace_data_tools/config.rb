@@ -30,7 +30,7 @@ module AspaceDataTools
 
     def preferred_path
       File.expand_path(
-        File.join("~", ".config", "aspace_data_tools", "config.json")
+        File.join("~", ".config", "aspace-data-tools", "config.json")
       )
     end
 

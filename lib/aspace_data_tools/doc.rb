@@ -7,6 +7,7 @@ module AspaceDataTools
     module_function
 
     # @param name [String] jsonmodel_type of record
+    # @return [ADT::Doc::Rectype]
     def get_rectype(name)
       fetched = rectypes.find { |rt| rt.name == name }
       return fetched if fetched
@@ -19,6 +20,7 @@ module AspaceDataTools
       fail("#{result.status}\n#{result.parsed}")
     end
 
+    # @return [Array<ADT::Doc::Rectype>] primary record types
     def rectypes
       @rectypes ||= Rectypes.new.call
     end

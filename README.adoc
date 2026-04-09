@@ -78,7 +78,7 @@ This is useful for experimenting, development, or doing ad-hoc stuff with existi
 ----
 # Pull all record type schemas and convert to RecordType objects
 # Useful for querying across the record types
-rts = ADT.record_types
+rts = ADT::Doc.rectypes
 
 # Example query across record types to find those with a `position` field,
 #   but no `ancestors` field
@@ -88,10 +88,10 @@ rtna = rts.select do |rectype|
 end
 
 # Get a specific record type
-r = ADT.get_rectype("resource")
+r = ADT::Doc.get_rectype("resource")
 
 # List required fields for each record type to screen
-ADT.reqfields
+ADT::Doc.reqfields
 
 # Get an archivesspace-client instance with which to do make ad hoc API calls
 client = ADT.client

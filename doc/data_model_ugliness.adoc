@@ -1,0 +1,174 @@
+:toc:
+:toc-placement!:
+:toclevels: 4
+:imagesdir: https://raw.githubusercontent.com/lyrasis/aspace_data_tools/main/images
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+= ArchivesSpace Data Model ugliness
+
+toc::[]
+
+== The schemas lie by omission
+
+From `resource` schema:
+
+[source,json]
+.*At least one `lang_materials` subrecord is required*
+----
+# Languages (overrides abstract schema)
+"lang_materials" => {"type" => "array", "ifmissing" => "error", "minItems" => 1, "items" => {"type" => "JSONModel(:lang_material) object"}},
+----
+
+We can programmatically jump to other schemas to pull the needed info from them for inclusion in a main record.
+From the `lang_material` schema:
+
+[source,json]
+.*Neither property is required*
+----
+"properties" => {
+  "language_and_script" => {"type" => "JSONModel(:language_and_script) object"},
+  "notes" => {
+    "type" => "array",
+    "items" => {"type" => "JSONModel(:note_langmaterial) object"},
+  },
+----
+
+From the above you would expect the following resource record to be ingested:
+
+[source,json]
+----
+{
+  "title": "Resource with ext id",
+  "id_0": "RID1",
+  "level": "collection",
+  "finding_aid_language": "eng",
+  "finding_aid_script": "Latn",
+  "jsonmodel_type": "resource",
+  "lang_materials": [
+    {
+      "jsonmodel_type": "lang_material",
+      "notes": [
+        {
+          "jsonmodel_type": "note_langmaterial",
+          "type": "langmaterial",
+          "content": [
+            "Probably in English"
+          ]
+        }
+      ]
+    }
+  ],
+  "extents": [
+    {
+      "number": "1",
+      "portion": "whole",
+      "extent_type": "linear_feet",
+      "jsonmodel_type": "extent"
+    }
+  ],
+  "dates": [
+    {
+      "begin": "1987-07-16",
+      "end": "1987-07-18",
+      "date_type": "inclusive",
+      "label": "event",
+      "jsonmodel_type": "date"
+    }
+  ]
+}
+----
+
+However, posting this record returns:
+
+[source, ruby]
+----
+{"error" => {"coded_errors" => ["must_contain_at_least_one_language"]},
+----
+
+For resources, the `lang_material`'s `language_and_script` property is being required, but there is no way to determine this from the schema.
+
+An actual "schema" is supposed to define all the fields in a record, whether fields are required or not, data types, and cardinality.
+
+Given that we can't trust the ArchivesSpace schema to express required fields complicates any attempt at programmatically extracting ArchivesSpace data requirements.
+
+== ASModel classes
+
+These classes (in `backend/app/model`) inherit from `Sequel::Model` and include the `ASModel` module.
+The code in these classes expresses a number of ArchivesSpace's important data model details.
+These details include:
+
+[source,ruby]
+.*Record scope (global or repository)*
+----
+set_model_scope :repository
+----
+
+[source,ruby]
+.*Uniqueness constraints*
+----
+repo_unique_constraint(:ead_id,
+                       :message => "Must be unique",
+                       :json_property => :ead_id)
+----
+
+[source,ruby]
+.*Validations*
+----
+def validate
+  validate_mixed_content_field()
+  super
+end
+----
+
+In addition, other Record type-specific data details may be present, including:
+
+* Logic for autogenerating field data
+* Special behavior/treatment of fields when creating and updating records from JSON
+* Relationships with other records
+* Nested record definition (what causes a record to be nested is still unclear to me; not all "subrecords" are defined as nested)
+* What enums can be used to populate specific fields
+* Whether record type can be suppressed
+
+Ruby Mixins are used heavily to compose `ASModel` class behavior, which means it can be quite difficult for even an experienced Rubyist to track down where all behavior is coming from.
+This does not bode well for being able to programmatically extract this information.
+
+For example, going back to the question of what is enforcing the inclusion of `lang_material/language_and_script` (which itself requires a `language` property) in a resource record:
+
+Neither the Resource, LangMaterial, nor LanguageAndScript model classes express anything about requiring `lang_material/language_and_script/language` in a resource.
+
+Recall that all the individual record type model classes include the `ASModel` module.
+The `ASModel` module includes the `JSONModel` module from `/common`.
+
+The following code can be found in the `/common/validations.rb` file, which extends `JSONModel`:
+
+[source,ruby]
+----
+def self.check_language(hash)
+  langs = hash['lang_materials'].map {|l| l['language_and_script']}.compact.reject {|e| e == [] }.flatten
+
+  errors = []
+
+  if langs == []
+    errors << :must_contain_at_least_one_language
+  end
+
+  errors
+end
+
+if JSONModel(:resource)
+  JSONModel(:resource).add_validation("check_language") do |hash|
+    check_language(hash)
+  end
+end
+----
+
+So that explains that.
+
+And _*UNFORTUNATELY*_ it explains why, at least for initial iteration of this data-model-related tooling, there will need to be a fair amount of manually hard-coded janky logic.

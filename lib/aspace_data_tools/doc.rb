@@ -32,6 +32,7 @@ module AspaceDataTools
       nil
     end
 
+    # @return [Hash] parsed locale file value for "en"
     def locales = @locales ||= get_locales
 
     # @return [Hash] with machine names as keys, display names as values

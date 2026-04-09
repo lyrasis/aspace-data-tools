@@ -11,7 +11,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-= ArchivesSpace Data Model ugliness
+= ArchivesSpace Data Model problems
 
 toc::[]
 

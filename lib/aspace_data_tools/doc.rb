@@ -6,6 +6,30 @@ module AspaceDataTools
   module Doc
     module_function
 
+    # @param name [String] jsonmodel_type of record
+    def get_rectype(name)
+      fetched = rectypes.find { |rt| rt.name == name }
+      return fetched if fetched
+
+      result = ADT.client.get("/schemas/#{name}")
+      if result.status_code == 200
+        return Rectype.new(name, result.parsed)
+      end
+
+      fail("#{result.status}\n#{result.parsed}")
+    end
+
+    def rectypes
+      @rectypes ||= Rectypes.new.call
+    end
+
+    def reqfields
+      rectypes.each do |rt|
+        puts "#{rt.name}:\n#{rt.required_fields.join(",")}\n\n"
+      end
+      nil
+    end
+
     def locales = @locales ||= get_locales
 
     # @return [Hash] with machine names as keys, display names as values

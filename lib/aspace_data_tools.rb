@@ -54,6 +54,8 @@ module AspaceDataTools
       end
       nil
     end
+
+    def locales_file = File.join(Bundler.root, "vendor", "locales.yml")
   end
 end
 

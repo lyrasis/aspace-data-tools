@@ -21,6 +21,8 @@ module AspaceDataTools
       end
 
       def subrecord?
+        return false if read_only?
+
         config.to_s
           .match?(/JSONModel\(:[^)]+\) object"/)
       end

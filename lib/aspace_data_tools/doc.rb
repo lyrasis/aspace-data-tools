@@ -29,6 +29,13 @@ module AspaceDataTools
     def properties = rectypes.map(&:properties)
       .flatten
 
+    # @param norm [Hash] normalized property config
+    # @return [Array<ADT::Doc::Property]
+    def properties_by_norm(norm)
+      properties.select { |p| p.normalize_config == norm }
+        .sort_by { |p| "#{p.rectype} #{p.name}" }
+    end
+
     def reqfields
       rectypes.each do |rt|
         puts "#{rt.name}:\n#{rt.required_fields.join(",")}\n\n"

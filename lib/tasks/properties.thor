@@ -18,11 +18,7 @@ class Properties < Thor
     enum: %w[model subrec],
     aliases: "-f"
   def norm
-    results = ADT::Doc.rectypes
-      .map { |rt| rt.properties.map(&:normalize_config).uniq }
-      .flatten
-      .uniq
-      .sort_by { |h| h.to_s }
+    props = ADT::Doc.properties
 
     case options[:filter]
     when "model"
@@ -47,4 +43,7 @@ class Properties < Thor
     end
   end
   # rubocop:enable Lint/Debugger
+
+  desc "readonly", "List read only properties"
+  def readonly = puts pp(ADT::Doc.properties.select(&:read_only?))
 end

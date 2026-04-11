@@ -6,12 +6,7 @@ class Properties < Thor
 
   # rubocop:disable Lint/Debugger
   desc "norm", "Print normalized field config to screen"
-  method_option :mode,
-    required: false,
-    default: "stdout",
-    type: :string,
-    enum: %w[stdout pry],
-    aliases: "-m"
+  shared_option :command_mode
   method_option :filter,
     required: false,
     type: :string,
@@ -31,7 +26,7 @@ class Properties < Thor
       .uniq
       .sort_by { |h| h.to_s }
 
-    if options[:mode] == "stdout"
+    if options[:command_mode] == "stdout"
       results.each do |r|
         pp(r)
         puts ""

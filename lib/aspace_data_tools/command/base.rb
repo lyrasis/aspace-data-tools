@@ -15,6 +15,13 @@ module AspaceDataTools
             aliases: "-i",
             required: true
           },
+          command_mode: {
+            required: false,
+            default: "stdout",
+            type: :string,
+            enum: %w[stdout pry],
+            aliases: "-m"
+          },
           output_mode: {
             desc: "Output mode in which to run command",
             enum: %w[csv stdout],

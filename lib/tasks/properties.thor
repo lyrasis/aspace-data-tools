@@ -15,7 +15,7 @@ class Properties < Thor
   method_option :filter,
     required: false,
     type: :string,
-    enum: %w[model],
+    enum: %w[model subrec],
     aliases: "-f"
   def norm
     results = ADT::Doc.rectypes
@@ -24,9 +24,16 @@ class Properties < Thor
       .uniq
       .sort_by { |h| h.to_s }
 
-    if options[:filter] == "model"
-      results.select! { |r| r.to_s.match?(/JSONModel\(:[^)]+\)/) }
+    case options[:filter]
+    when "model"
+      props.select!(&:config_includes_model?)
+    when "subrec"
+      props.select!(&:subrecord?)
     end
+
+    results = props.map(&:normalize_config)
+      .uniq
+      .sort_by { |h| h.to_s }
 
     if options[:mode] == "stdout"
       results.each do |r|

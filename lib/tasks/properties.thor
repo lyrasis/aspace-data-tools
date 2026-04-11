@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Commands to get field-level info
-class Fields < Thor
+class Properties < Thor
   include ADT::Command::Base
 
   # rubocop:disable Lint/Debugger
@@ -12,12 +12,21 @@ class Fields < Thor
     type: :string,
     enum: %w[stdout pry],
     aliases: "-m"
+  method_option :filter,
+    required: false,
+    type: :string,
+    enum: %w[model],
+    aliases: "-f"
   def norm
     results = ADT::Doc.rectypes
       .map(&:norm)
       .flatten
       .uniq
       .sort_by { |h| h.to_s }
+
+    if options[:filter] == "model"
+      results.select! { |r| r.to_s.match?(/JSONModel\(:[^)]+\)/) }
+    end
 
     if options[:mode] == "stdout"
       results.each do |r|

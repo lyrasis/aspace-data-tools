@@ -27,17 +27,17 @@ module AspaceDataTools
         @mode = mode
       end
 
-      def fields
-        schema["properties"].map { |prop, cfg| Field.new(prop, cfg, self) }
+      def properties
+        schema["properties"].map { |prop, cfg| Property.new(prop, cfg, self) }
       end
 
       def norm
-        fields.map(&:normalize_config)
+        properties.map(&:normalize_config)
           .uniq
       end
 
       def to_s
-        "<##{self.class}:#{object_id.to_s(8)} name: #{name}, mode: #{mode}>"
+        "<##{self.class}:#{object_id.to_s(8)} name: #{name}, mode: #{mode}!>"
       end
       alias_method :inspect, :to_s
     end

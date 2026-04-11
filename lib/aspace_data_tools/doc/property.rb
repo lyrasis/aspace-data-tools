@@ -2,8 +2,9 @@
 
 module AspaceDataTools
   module Doc
-    class Field
-      include FieldNormalizable
+    class Property
+      include PropertyNormalizable
+      include PropertyConfigable
 
       attr_reader :name, :config, :rectype, :mode
 

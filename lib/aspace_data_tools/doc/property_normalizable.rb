@@ -3,7 +3,7 @@
 module AspaceDataTools
   module Doc
     # Mixin module to handle normalization of field config
-    module FieldNormalizable
+    module PropertyNormalizable
       def normalize_config(h = config)
         h.map { |k, v| normalize(k, v) }.to_h
       end

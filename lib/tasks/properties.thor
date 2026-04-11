@@ -19,7 +19,7 @@ class Properties < Thor
     aliases: "-f"
   def norm
     results = ADT::Doc.rectypes
-      .map(&:norm)
+      .map { |rt| rt.properties.map(&:normalize_config).uniq }
       .flatten
       .uniq
       .sort_by { |h| h.to_s }

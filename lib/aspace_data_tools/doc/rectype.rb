@@ -31,11 +31,6 @@ module AspaceDataTools
         schema["properties"].map { |prop, cfg| Property.new(prop, cfg, self) }
       end
 
-      def norm
-        properties.map(&:normalize_config)
-          .uniq
-      end
-
       def to_s
         "<##{self.class}:#{object_id.to_s(8)} name: #{name}, mode: #{mode}!>"
       end

@@ -25,6 +25,10 @@ module AspaceDataTools
       @rectypes ||= Rectypes.new.call
     end
 
+    # @return [Array<ADT::Doc::Property]
+    def properties = rectypes.map(&:properties)
+      .flatten
+
     def reqfields
       rectypes.each do |rt|
         puts "#{rt.name}:\n#{rt.required_fields.join(",")}\n\n"

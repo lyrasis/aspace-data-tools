@@ -13,7 +13,7 @@ module AspaceDataTools
         :field
       end
 
-      def read_only? = config.dig("readonly") == true
+      def read_only? = true_val?(config.dig("readonly"))
 
       def config_includes_model?
         config.to_s
@@ -26,6 +26,8 @@ module AspaceDataTools
         config.to_s
           .match?(/JSONModel\(:[^)]+\) object"/)
       end
+
+      def true_val?(val) = val == true || val == "true"
     end
   end
 end

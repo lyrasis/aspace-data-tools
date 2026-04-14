@@ -13,7 +13,8 @@ module AspaceDataTools
         repository_with_agent telephone active_edits user
         vocabulary]
 
-      def initialize; end
+      def initialize
+      end
 
       def call
         ADT::Doc.endpoints

@@ -199,3 +199,17 @@ This is why:
 * Requiring `lang_materials/language_and_script/language` makes sense in the /common/validations.rb.
 You don't need to connect to the database to efficiently check for that value in a given JSON payload and complain if it is missing.
 * Most, if not all, uniqueness constraints and relationship-oriented validations occur in the /backend, since these types of checks are much faster/easier to do via the database.
+
+== Inconsistencies to be aware of
+
+In schemas, sometimes the `readonly` property value is the Ruby boolean `TrueValue` class indicator `true` (without quotes.
+Sometimes it is a String: `"true"`
+
+To pull, in `bin/console`:
+
+[source,ruby]
+----
+props = ADT::Doc.properties
+rob = props.select { |c| c.config.dig("readonly") == true }
+ros = props.select { |c| c.config.dig("readonly") == "true" }
+----

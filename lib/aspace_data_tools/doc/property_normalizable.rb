@@ -5,7 +5,7 @@ module AspaceDataTools
     # Mixin module to handle normalization of field config
     module PropertyNormalizable
       def normalize_config(h = config)
-        h.map { |k, v| normalize(k, v) }.to_h
+        h.map { |k, v| normalize(k, v) }.compact.to_h
       end
 
       private
@@ -17,7 +17,7 @@ module AspaceDataTools
         return [k, v] if k == "type" &&
           v.is_a?(Array) &&
           v.all? { |ve| ve.is_a?(String) && !ve.start_with?("JSONModel") }
-        return [k, v] if k == "tags"
+        return if k == "tags"
 
         if k == "dynamic_enum"
           [k, "enum_name"]

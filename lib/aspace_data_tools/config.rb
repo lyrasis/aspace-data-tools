@@ -14,6 +14,8 @@ module AspaceDataTools
       self
     end
 
+    def aspace_code_path = File.expand_path(parse[:aspace_code_path])
+
     def to_h
       parse
     end
@@ -39,6 +41,8 @@ module AspaceDataTools
     end
 
     def define(key, val)
+      return if self.class.method_defined?(key)
+
       self.class.define_method(key) { val }
     end
   end

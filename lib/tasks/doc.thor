@@ -13,6 +13,19 @@ class Doc < Thor
   desc "schemas", "List all schemas"
   def schemas = puts ADT::Doc.schemas.keys
 
+  desc "nested", "List ASModel classes with nested records"
+  def nested
+    ADT::Doc.rectypes.each do |rt|
+      puts ""
+      puts rt.name
+      if rt.nested_records.empty?
+        puts "No nested records"
+      else
+        pp(rt.nested_records)
+      end
+    end
+  end
+
   desc "required", "Print required fields to screen"
   def required
     ADT.reqfields

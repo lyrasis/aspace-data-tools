@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
+require "forwardable"
+
 module AspaceDataTools
   module Doc
     class Rectype
+      extend Forwardable
+
+      def_delegator :model, :nested_records
+
       attr_reader :name, :schema, :mode
 
       class << self
@@ -26,6 +32,8 @@ module AspaceDataTools
         @schema = schema
         @mode = mode
       end
+
+      def model = ADT::AsCode::AsModel.for_rectype(name)
 
       def properties
         schema["properties"].map { |prop, cfg| Property.new(prop, cfg, self) }

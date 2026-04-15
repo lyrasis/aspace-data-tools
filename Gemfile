@@ -9,6 +9,7 @@ gem "archivesspace-client", github: "lyrasis/archivesspace-client",
 gem "bigdecimal"
 gem "csv"
 gem "json-schema", "1.0.10" # pinned to version used in AS
+gem "prism"
 gem "psych"
 gem "table_tennis"
 gem "thor"

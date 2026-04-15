@@ -186,6 +186,7 @@ DEPENDENCIES
   bigdecimal
   csv
   json-schema (= 1.0.10)
+  prism
   pry (~> 0.14)
   psych
   rspec

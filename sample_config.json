@@ -9,9 +9,6 @@
   "client_timeout": 60,
   "client_verify_ssl": false,
   "client_debug": false,
-  // URI of current ArchivesSpace locales file. Make sure it is for the RAW
-  //   .yml file, not the usual GitHub page
-  "locales_uri": "https://raw.githubusercontent.com/archivesspace/archivesspace/refs/heads/master/common/locales/en.yml",
   // Path to local copy of ArchivesSpace code
   "aspace_code_path": "~/code/my_archivesspace"
 }

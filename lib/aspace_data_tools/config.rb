@@ -16,6 +16,9 @@ module AspaceDataTools
 
     def aspace_code_path = File.expand_path(parse[:aspace_code_path])
 
+    def locales_path = File.join(aspace_code_path, "common", "locales",
+      "en.yml")
+
     def to_h
       parse
     end

@@ -74,10 +74,7 @@ module AspaceDataTools
     end
 
     def get_locales
-      result = ADT::Doc::UpdateLocales.new.call
-      return {} if result == :failure
-
-      Psych.load_file(ADT.locales_file, aliases: true)["en"]
+      Psych.load_file(ADT.config.locales_path, aliases: true)["en"]
     end
     private_class_method(:get_locales)
   end

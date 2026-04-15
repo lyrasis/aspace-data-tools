@@ -32,8 +32,6 @@ module AspaceDataTools
     def client
       @client ||= Asclient.new.call
     end
-
-    def locales_file = File.join(Bundler.root, "vendor", "locales.yml")
   end
 end
 

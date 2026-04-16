@@ -39,6 +39,8 @@ module AspaceDataTools
         schema["properties"].map { |prop, cfg| Property.new(prop, cfg, self) }
       end
 
+      def required_fields = properties.select(&:required?)
+
       def to_s
         "<##{self.class}:#{object_id.to_s(8)} name: #{name}, mode: #{mode}!>"
       end

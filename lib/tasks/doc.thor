@@ -28,6 +28,14 @@ class Doc < Thor
 
   desc "required", "Print required fields to screen"
   def required
-    ADT.reqfields
+    ADT::Doc.rectypes.each do |rt|
+      puts ""
+      puts rt.name
+      if rt.required_fields.empty?
+        puts "No required fields"
+      else
+        puts rt.required_fields.map { |f| "  #{f.name}" }
+      end
+    end
   end
 end

@@ -25,6 +25,14 @@ toc::[]
 
 === Setup
 
+==== Local copy of ArchivesSpace code
+
+If you have not already cloned https://github.com/archivesspace/archivesspace[the ArchivesSpace GitHub repository] (or a fork of it), you will need to do that.
+
+You will need to add the path to this local repository in your config file, described below.
+
+If you need to "use" a specific version of ArchivesSpace to pull info using this tool, you will need to check out the branch/tag for that version in your repo before using this tool.
+
 ==== Get dependencies
 
 [source,bash]
@@ -45,7 +53,7 @@ If significant changes have been pushed to master, but not yet released, you may
 
 [WARNING]
 ====
-You should switch to a locally-running instance, or a real target instance online, before using commands that post data to the instance.
+You should switch to a locally-running instance, or a real target instance online, before using any commands that post data to the instance.
 ====
 
 [TIP]

@@ -16,30 +16,32 @@ module AspaceDataTools
             required: true
           },
           command_mode: {
+            desc: "Whether to write output of the results, or give you a "\
+              "pry breakpoint with which to interact with the results",
             required: false,
-            default: "stdout",
+            default: "output",
             type: :string,
-            enum: %w[stdout pry],
-            aliases: "-m"
+            enum: %w[output pry],
+            aliases: "--cm"
           },
           output_mode: {
             desc: "Output mode in which to run command",
             enum: %w[csv stdout],
             default: "stdout",
             type: :string,
-            aliases: "-m"
+            aliases: "--om"
           },
           output_dir: {
             desc: "Path to output directory",
             type: :string,
             default: nil,
-            aliases: "-o"
+            aliases: "--od"
           },
           output_path: {
             desc: "Path to output file",
             type: :string,
             default: nil,
-            aliases: "-o"
+            aliases: "--op"
           }
         }
       end

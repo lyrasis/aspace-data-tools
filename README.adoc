@@ -98,9 +98,6 @@ end
 # Get a specific record type
 r = ADT::Doc.get_rectype("resource")
 
-# List required fields for each record type to screen
-ADT::Doc.reqfields
-
 # Get an archivesspace-client instance with which to do make ad hoc API calls
 client = ADT.client
 ----

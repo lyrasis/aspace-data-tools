@@ -6,7 +6,7 @@ module AspaceDataTools
       include PropertyNormalizable
       include PropertyConfigable
 
-      attr_reader :name, :config, :rectype, :mode
+      attr_reader :name, :config, :rectype
 
       COMPLEX_TYPES = %w[array]
 
@@ -17,7 +17,6 @@ module AspaceDataTools
         @name = name
         @config = config
         @rectype = rectype.name
-        @mode = rectype.mode
       end
 
       def type = config["type"]
@@ -28,7 +27,7 @@ module AspaceDataTools
 
       def to_s
         "<##{self.class}:#{object_id.to_s(8)} "\
-          "name: #{name}, rectype: #{rectype}, mode: #{mode}>"
+          "rectype: #{rectype}, name: #{name} !>"
       end
       alias_method :inspect, :to_s
 

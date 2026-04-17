@@ -1,0 +1,115 @@
+:toc:
+:toc-placement!:
+:toclevels: 4
+:imagesdir: https://raw.githubusercontent.com/lyrasis/aspace_data_tools/main/images
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+= Subrecord patterns
+
+toc::[]
+
+== Simple
+
+[source,ruby]
+.*Normalized property definition pattern*
+----
+{"type" => "JSONModel(:rectype) object"}
+----
+
+A single instance of this subrecord type can be added to the parent record type.
+
+.*Examples*
+* resource collection_management
+* event date
+* resource user_defined
+
+== Multiple
+
+[source,ruby]
+.*Normalized property definition pattern*
+----
+{"type" => "array", "items" => {"type" => "JSONModel(:rectype) object"}}
+----
+
+Multiple instances of this subrecord type can be added to the parent record type.
+
+.*Examples*
+* accession deaccessions
+* agent_corporate_entity external_documents
+* archival_object extents
+
+=== Variants on this pattern
+
+==== Non-required agent subrecords
+
+[source,ruby]
+.*Normalized property definition pattern*
+----
+{"required" => false, "type" => "array", "items" => {"type" => "JSONModel(:rectype) object"}}
+----
+
+The above pattern is found only in agent records.
+The `required` key is always `false` in the schemas.
+Possibly related to the custom required fields functionality?
+
+.*Examples*
+* agent_family agent_identifiers
+* agent_person agent_occupations
+
+[source,ruby]
+.*bin/console:* Check for properties with `required` values other than `false`
+----
+props = ADT::Doc.properties
+props.select { |prop| prop.config.key?("required") && !prop.config["required"] == false }
+----
+
+==== Required subrecords
+
+[source,ruby]
+.*Normalized property definition pattern*
+----
+ {"type" => "array", "items" => {"type" => "JSONModel(:rectype) object"}, "ifmissing" => "error", "minItems" => 1}
+----
+
+At least one instance of this subrecord must be added/populated in record.
+Optionally, more can be added.
+In all cases, `minItems` = `1`.
+
+.*Examples*
+* agent_person names
+* resource extents
+* resource dates
+
+[source,ruby]
+.*bin/console:* Check for properties with `minItems` values other than `1`
+----
+props = ADT::Doc.properties
+props.select { |prop| prop.config.key?("minItems") && !prop.config["minItems"] == 1 }
+----
+
+
+
+== Multiple instance, multiple types
+
+[source,ruby]
+.*Normalized property definition pattern*
+----
+{"type" => "array", "items" => {"type" => [{"type" => "JSONModel(:rectype)"}]}}
+----
+
+The above pattern indicates when multiple instances of different (generally similar) record types can be added in the same section of a parent record.
+
+When you click to add a new instance, you must first select a type of subrecord to add.
+Then the available fields for that subrecord are displayed for you to populate.
+
+.*Examples*
+* accession related_accessions
+* resource notes
+* agent_person related_agents

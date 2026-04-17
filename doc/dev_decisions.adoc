@@ -1,0 +1,42 @@
+:toc:
+:toc-placement!:
+:toclevels: 4
+:imagesdir: https://raw.githubusercontent.com/lyrasis/aspace_data_tools/main/images
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+= Development decisions
+
+toc::[]
+
+== fields.csv
+
+=== Excluded properties
+
+These include:
+
+* Properties identified as read-only
+* Properties whose names start with `_`
+* `jsonmodel_type`
+* `lock_version`
+* `uri`
+
+`jsonmodel_type` is required in every record and subrecord type.
+I excluded it for its sheer ubiquity.
+It should be populated with the non-display form of the record type or subrecord in which the field appears.
+
+=== Display names
+
+These are pulled from the English locales file, using the patterns I could determine relatively quickly for an initial pass.
+
+Where a display string could not be found in the locales file, one is generated via the following algorithm:
+
+* Split the machine name on `_`
+* Capitalize each element in the Array
+* Join the Array with ` `

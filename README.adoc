@@ -101,3 +101,14 @@ r = ADT::Doc.get_rectype("resource")
 # Get an archivesspace-client instance with which to do make ad hoc API calls
 client = ADT.client
 ----
+
+[#docref]
+=== Documentation/reference
+
+See the `/doc` folder.
+
+This includes (of note):
+
+fields.csv:: Listing of all(ish) fields. See https://github.com/lyrasis/aspace-data-tools/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22known%20issue%22[known issues] relating to this file. More columns, indicating things like data type and cardinality, will be added as we figure it out/have time.
+data_model_problems.adoc:: Just a note that these are "problems" for making this tool do what we want, not necessarily fundamental data model problems.
+dev_decisions.adoc:: This is important to read if you need to be sure you understand what is included/excluded in various output, or how certain things are determined.

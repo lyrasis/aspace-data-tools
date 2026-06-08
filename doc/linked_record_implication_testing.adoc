@@ -1,0 +1,52 @@
+:toc:
+:toc-placement!:
+:toclevels: 4
+:imagesdir: https://raw.githubusercontent.com/lyrasis/aspace_data_tools/main/images
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+= Linked record implication testing
+
+toc::[]
+
+== Assessments when related records are deleted
+
+Question raised by Olivia on 2026-06-08: Do Assessment records get removed if the record(s) they are linked to are deleted?
+
+I tested via making changes in the staff interface in development environment and checking the resulting changes in the database.
+
+I created an Assessment linked to two Accessions.
+
+I tried deleting one of the Accessions.
+
+It said I could not delete the Accession because it was related to an Assessment.
+
+Unless there are other record types that do allow deletion while related to an Assessment{empty}footnote:[I did not research this], then the situation Olivia was wondering about cannot occur.
+
+== Events when related records are deleted
+
+Question raised by Olivia on 2026-06-08: Do Event records get removed if the record(s) they are linked to are deleted?
+
+I tested via making changes in the staff interface in development environment and checking the resulting changes in the database.
+
+I created an Event linked to two Accessions.
+
+One record was created in the `event` table.
+
+Two rows representing the two Accession/Event relationships were created in `event_link_rlshp` table.
+
+I deleted one of the linked Accessions.
+
+One row representing the remaining Accession/Event relationship remained in the `event_link_rlshp` table.
+
+I deleted the remaining linked Accession.
+
+No rows involving the Event remained in the `event_link_rlshp` table.
+
+The `event` table record remained.

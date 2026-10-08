@@ -33,7 +33,7 @@ You will need to add the path to this local repository in your config file, desc
 
 [WARNING]
 ====
-Note that you will need to clone the ArchivesSpace repo *even if you're using a Dockerized instance of ArchivesSpace*. The main reason is that the Docker image is a compiled distribution rather than a source tree. The data tools don't have any way to access the "filesystem" inside Docker. See <<#_notes_for_dockerized_archivesspace>> below. 
+Note that you will need to clone the ArchivesSpace repo *even if you're using a Dockerized instance of ArchivesSpace*. The main reason is that the Docker image is a compiled distribution rather than a source tree. The data tools don't have any way to access the "filesystem" inside Docker. See <<dockerized-aspace>> below. 
 ====
 
 If you need to "use" a specific version of ArchivesSpace to pull info using this tool, you will need to check out the branch/tag for that version in your repo before using this tool.
@@ -66,6 +66,7 @@ You should switch to a locally-running instance, or a real target instance onlin
 `thor config show` will write your current config to STDOUT.
 ====
 
+[#dockerized-aspace]
 ==== Notes for Dockerized ArchivesSpace
 
 There are two configuration changes you'll need to make in order to use this tool with Dockerized instances of ArchivesSpace. 

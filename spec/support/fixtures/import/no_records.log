@@ -1,0 +1,16 @@
+==================================================
+testing.xml
+==================================================
+1. STARTED: Reading JSON records
+1. DONE: Reading JSON records
+No records were found in the input file!
+2. STARTED: Validating records and checking links
+2. DONE: Validating records and checking links
+3. STARTED: Evaluating record relationships
+3. DONE: Evaluating record relationships
+4. STARTED: Looking for cyclic relationships
+4. DONE: Looking for cyclic relationships
+5. STARTED: Saving records: cycle 1
+5. DONE: Saving records: cycle 1
+6. STARTED: Cleaning up
+6. DONE: Cleaning up

@@ -20,26 +20,40 @@ module AspaceDataTools
 
       # @param input [String] path to manifest CSV
       # @param import_type [String] key of IMPORT_TYPES, above
-      def initialize(input:, import_type:)
+      # @param poll_interval [Numeric] seconds between job status checks
+      # @param timeout [Numeric] seconds to wait for jobs to finish
+      def initialize(input:, import_type:, poll_interval: 5, timeout: 3600)
         unless IMPORT_TYPES.key?(import_type)
           fail("‼️ Unsupported import type: #{import_type}")
         end
 
         @input = input
         @import_type = import_type
+        @poll_interval = poll_interval
+        @timeout = timeout
         @client = ADT.client
       end
 
       def call
         jobs = Manifest.new(path: input, repo_ids: list_repo_ids).jobs
         submit_all(jobs)
+        wait_for(jobs)
         summarize(jobs)
         jobs
       end
 
       private
 
-      attr_reader :input, :import_type, :client
+      attr_reader :input, :import_type, :poll_interval, :timeout, :client
+
+      def wait_for(jobs)
+        submitted = jobs.select { |job| job.status == :submitted }
+        return if submitted.empty?
+
+        puts "Waiting for #{submitted.length} import jobs to finish"
+        Poller.new(client: client, interval: poll_interval, timeout: timeout)
+          .call(submitted)
+      end
 
       # Generate list of available repos in this instance 
       def list_repo_ids
@@ -109,7 +123,7 @@ module AspaceDataTools
         counts = jobs.group_by(&:status).transform_values(&:length)
         puts "Submitted #{import_type} import jobs from #{input}"
 
-        %i[submitted failed skipped].each do |status|
+        %i[submitted timeout failed skipped].each do |status|
           puts "  - #{counts.fetch(status, 0)} #{status}"
         end
         puts TableTennis.new(jobs.map { |job| summary_row(job) })
@@ -121,6 +135,7 @@ module AspaceDataTools
           repo: job.repo,
           job_id: job.job_id,
           status: job.status,
+          job_status: job.job_status,
           message: job.message
         }
       end

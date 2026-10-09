@@ -10,11 +10,13 @@ module AspaceDataTools
     #   :skipped - row failed manifest validation; never submitted
     #   :submitted - import job created in ArchivesSpace
     #   :failed - job submission was attempted and failed
+    #   :timeout - job had not finished when polling gave up
     #
-    # I think these are all the meaningful status conditions we can
-    # derive. 
-    Job = Struct.new(:row, :filepath, :repo, :job_id, :status, :message,
-      keyword_init: true) do
+    # job_status is the job's status as last reported by ArchivesSpace
+    # (queued, running, completed, failed, canceled). It is kept separate
+    # from status because "completed" does not mean the import worked.
+    Job = Struct.new(:row, :filepath, :repo, :job_id, :status, :job_status,
+      :message, keyword_init: true) do
       def pending? = status == :pending
     end
   end

@@ -12,47 +12,90 @@ module AspaceDataTools
       # Supported import_job import_type values. :primary matches the uri of
       # the main record each file is expected to create.
       #
-      # TODO: use this to restrict ingests to supported formats (done) and to 
-      # note the pattern that will go in record_created_uri (TK) 
+      # Used to restrict ingests to supported formats, and by Results to pick
+      # the record that goes in record_created_uri.
       IMPORT_TYPES = {
         "ead_xml" => {primary: %r{/resources/\d+\z}}
       }.freeze
+
+      # Order in which statuses are listed in the end-of-run summary
+      STATUS_ORDER = %i[success no_record import_failed unresolved timeout
+        submitted failed skipped].freeze
 
       # @param input [String] path to manifest CSV
       # @param import_type [String] key of IMPORT_TYPES, above
       # @param poll_interval [Numeric] seconds between job status checks
       # @param timeout [Numeric] seconds to wait for jobs to finish
-      def initialize(input:, import_type:, poll_interval: 5, timeout: 3600)
+      # @param output [String, nil] path of report CSV; defaults to
+      #   <input>_report.csv. Created record uris and job logs are written
+      #   beside it.
+      def initialize(input:, import_type:, poll_interval: 5, timeout: 600,
+        output: nil)
         unless IMPORT_TYPES.key?(import_type)
           fail("‼️ Unsupported import type: #{import_type}")
         end
 
-        @input = input
+        @input = File.expand_path(input)
         @import_type = import_type
         @poll_interval = poll_interval
         @timeout = timeout
+        @output = File.expand_path(
+          output || @input.sub(/(\.csv)?\z/i, "_report.csv")
+        )
         @client = ADT.client
       end
 
       def call
-        jobs = Manifest.new(path: input, repo_ids: list_repo_ids).jobs
+        # Straight line of logic: load the manifest, extract data
+        # from it and map the data to jobs, submit the jobs, and 
+        # report on them once they've finished.
+        manifest = Manifest.new(path: input, repo_ids: list_repo_ids)
+        jobs = manifest.jobs
         submit_all(jobs)
-        wait_for(jobs)
-        summarize(jobs)
-        jobs
+        finished = wait_for(jobs)
+        collect_results(finished)
+        finish(manifest, jobs)
+      rescue Interrupt
+        # Submitted jobs keep running in ArchivesSpace, so save their job ids
+        # before exiting.
+        raise unless jobs
+
+        puts "\nInterrupted; writing report of progress so far"
+        finish(manifest, jobs)
+        # i.e. SIGINT (no named constant in Ruby?)
+        exit 130
       end
 
       private
 
-      attr_reader :input, :import_type, :poll_interval, :timeout, :client
+      attr_reader :input, :import_type, :poll_interval, :timeout, :output,
+        :client
 
+      def finish(manifest, jobs)
+        Report.new(path: output, headers: manifest.headers, jobs: jobs).call
+        summarize(jobs)
+        jobs
+      end
+
+      # @return [Array<Job>] jobs that finished
       def wait_for(jobs)
         submitted = jobs.select { |job| job.status == :submitted }
-        return if submitted.empty?
+        return [] if submitted.empty?
 
         puts "Waiting for #{submitted.length} import jobs to finish"
         Poller.new(client: client, interval: poll_interval, timeout: timeout)
           .call(submitted)
+      end
+
+      def collect_results(finished)
+        return if finished.empty?
+
+        puts "Collecting results for #{finished.length} finished jobs"
+        Results.new(
+          client: client,
+          primary: IMPORT_TYPES[import_type][:primary],
+          log_dir: output.sub(/(\.csv)?\z/i, "_logs")
+        ).call(finished)
       end
 
       # Generate list of available repos in this instance 
@@ -121,10 +164,12 @@ module AspaceDataTools
 
       def summarize(jobs)
         counts = jobs.group_by(&:status).transform_values(&:length)
-        puts "Submitted #{import_type} import jobs from #{input}"
+        puts "#{import_type} import results for #{input}"
 
-        %i[submitted timeout failed skipped].each do |status|
-          puts "  - #{counts.fetch(status, 0)} #{status}"
+        STATUS_ORDER.each do |status|
+          next unless counts.key?(status)
+
+          puts "  - #{counts[status]} #{status}"
         end
         puts TableTennis.new(jobs.map { |job| summary_row(job) })
       end
@@ -135,7 +180,7 @@ module AspaceDataTools
           repo: job.repo,
           job_id: job.job_id,
           status: job.status,
-          job_status: job.job_status,
+          record: job.record_created_uri,
           message: job.message
         }
       end

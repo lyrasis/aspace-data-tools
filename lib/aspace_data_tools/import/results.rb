@@ -73,7 +73,7 @@ module AspaceDataTools
         page = 1
         loop do
           parsed = get!(path, query: {page: page, page_size: PAGE_SIZE})
-          uris.jkconcat(parsed["results"].map { |r| r.dig("record", "ref") })
+          uris.concat(parsed["results"].map { |r| r.dig("record", "ref") })
           break if page >= parsed["last_page"].to_i
 
           page += 1

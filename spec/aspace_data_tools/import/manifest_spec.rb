@@ -12,7 +12,7 @@ RSpec.describe ADT::Import::Manifest do
   end
 
   # Manifest lives in a subdirectory so relative paths have somewhere to go
-  # for testing purposes. 
+  # for testing purposes.
   let(:manifest_dir) { File.join(@tmpdir, "batch") }
   let(:manifest_path) { File.join(manifest_dir, "manifest.csv") }
   let(:manifest) { described_class.new(path: manifest_path, repo_ids: [2, 3]) }
@@ -22,9 +22,9 @@ RSpec.describe ADT::Import::Manifest do
     File.write(manifest_path, csv)
   end
 
-  # Creates an (empty) EAD file and returns its absolute path. This is just a 
+  # Creates an (empty) EAD file and returns its absolute path. This is just a
   # stub generator that saves us the trouble of making standalone fixtures,
-  # which aren't really necessary for testing the straitghtforward manifest. 
+  # which aren't really necessary for testing the straitghtforward manifest.
   def ead(relpath)
     path = File.expand_path(relpath, manifest_dir)
     FileUtils.mkdir_p(File.dirname(path))
@@ -47,7 +47,7 @@ RSpec.describe ADT::Import::Manifest do
     end
   end
 
-  # This test is about specific reasons for skipping rows. The array of 
+  # This test is about specific reasons for skipping rows. The array of
   # arrays is just a matrix of test conditions:
   #
   #  [ reason for skipping, input file, target repo, why failed ]
@@ -94,7 +94,7 @@ RSpec.describe ADT::Import::Manifest do
       expect(job.status).to eq(:pending)
     end
 
-    # Ensure jobs are not altering absolute paths: 
+    # Ensure jobs are not altering absolute paths:
     it "leaves absolute paths unchanged" do
       expected = ead(File.join(@tmpdir, "absolute", "a.xml"))
       job = only_job(filepath: expected, repo: "2")

@@ -3,7 +3,7 @@
 require "tmpdir"
 
 RSpec.describe ADT::Import::Results do
-  # Make up some parameters for testing import logic: 
+  # Make up some parameters for testing import logic:
   let(:repo) { "2" }
   let(:job_id) { 7 }
   let(:records_path) { "repositories/#{repo}/jobs/#{job_id}/records" }
@@ -182,7 +182,7 @@ RSpec.describe ADT::Import::Results do
     end
 
     # Omit the "no records" line and confirm that we see no errors
-    # once it's gone: 
+    # once it's gone:
     context "with only banner and progress lines" do
       let(:log) do
         no_records_log.lines.reject { |l| l.include?("No records") }.join

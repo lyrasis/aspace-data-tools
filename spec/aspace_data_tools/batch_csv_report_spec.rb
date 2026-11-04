@@ -63,11 +63,14 @@ RSpec.describe ADT::BatchCsvReport do
     end
   end
 
+  # It's fine to have missing data in a row of the batch CSV (in the sense
+  # that it shouldn't break anything), so let's make sure that nothing breaks
+  # from bogus data when writing results 
   describe "rows with missing data" do
     let(:input_csv) { "filepath\na.xml\nb.xml\nc.xml\n" }
 
     it "writes every result column anyway, leaving missing and nil values"\
-      "empty" do
+      " empty" do
       report = write_report([
         {"job_id" => 1},
         {"error_message" => "fido", "job_id" => nil},
